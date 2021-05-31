@@ -23,7 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'vaccination.apps.VaccinationConfig',
-    'users.apps.UsersConfig'
+    'account.apps.UsersConfig'
 ]
 
 MIDDLEWARE = [
@@ -84,16 +84,16 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
     {
-        'NAME': 'users.validators.NumberValidator', 'OPTIONS': {'min_digits': 1, }
+        'NAME': 'account.validators.NumberValidator', 'OPTIONS': {'min_digits': 1, }
     },
     {
-        'NAME': 'users.validators.UppercaseValidator',
+        'NAME': 'account.validators.UppercaseValidator',
     },
     {
-        'NAME': 'users.validators.LowercaseValidator',
+        'NAME': 'account.validators.LowercaseValidator',
     },
     {
-        'NAME': 'users.validators.SymbolValidator',
+        'NAME': 'account.validators.SymbolValidator',
     },
 ]
 
@@ -117,4 +117,8 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'users.User'
+LOGIN_URL = 'auth-login'
+LOGIN_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = 'index'
+
+AUTH_USER_MODEL = 'account.User'

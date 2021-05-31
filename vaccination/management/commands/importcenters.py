@@ -1,5 +1,7 @@
 import os
-import csv
+import pandas as pd
+#import swifter
+from django.conf import settings
 
 from django.core.management.base import BaseCommand
 
@@ -8,6 +10,19 @@ from vaccination.models import VaccinationCenter
 
 class Command(BaseCommand):
     help = 'Importa arquivo csv com os locais de vacinação'
+
+    def create_or_update_centers(self, row):
+        cnes = int(row['cod_cnes'])
+        name = row['nom_estab']
+        address = row['dsc_endereco']
+        neighborhood = row['dsc_bairro']
+        city = row['dsc_cidade']
+
+        VaccinationCenter.objects.update_or_create(cnes=cnes,
+                                                   defaults={'name': name,
+                                                             'address': address,
+                                                             'neighborhood': neighborhood,
+                                                             'city': city})
 
     def handle(self, *args, **options):
 
@@ -27,23 +42,9 @@ class Command(BaseCommand):
             elif path == "2":
                 break
             try:
-
-                with open(path, 'r', encoding="utf-8") as csv_file:
-                    reader = csv.DictReader(csv_file)
-                    for row in reader:
-                        cnes = int(row['cod_cnes'])
-                        name = row['nom_estab']
-                        address = row['dsc_endereco']
-                        neighborhood = row['dsc_bairro']
-                        city = row['dsc_cidade']
-
-                        VaccinationCenter.objects.update_or_create(cnes=cnes,
-                                                                   defaults={'name': name,
-                                                                             'address': address,
-                                                                             'neighborhood': neighborhood,
-                                                                             'city': city})
-
-                    print('Arquivo importado com sucesso!')
+                df_centers = pd.read_csv(os.path.abspath(path), encoding='utf-8')
+                df_centers.apply(self.create_or_update_centers, axis=1)
+                print('Arquivo importado com sucesso!')
 
             except KeyError:
                 print("Arquivo não possui as colunas necessárias. Tente novamente.")
@@ -56,3 +57,4 @@ class Command(BaseCommand):
 
             else:
                 valid_path = True
+

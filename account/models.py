@@ -8,7 +8,6 @@ class UserManager(BaseUserManager):
     def create_user(self, email, name, password):
         user = self.model(email=self.normalize_email(email), name=name,)
         user.password = make_password(password)
-        #user.set_password(password)
         user.save()
         return user
 

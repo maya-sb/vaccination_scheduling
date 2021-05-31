@@ -10,6 +10,9 @@ class UserCreationForm(forms.ModelForm):
     password = forms.CharField(label='Senha', widget=forms.PasswordInput)
 
     def clean(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise ValidationError({'email': 'Email já está sendo utilizado.'})
         password = self.cleaned_data.get('password')
         if password:
             try:
@@ -40,4 +43,3 @@ class UserChangeForm(forms.ModelForm):
 
     def clean_password(self):
         return self.initial['password']
-

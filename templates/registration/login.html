@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    {% if form.errors %}
+        <p>Email ou senha incorretos!</p>
+    {% endif %}
+
+    <form class="form-signin" method="post" autocomplete="off">
+        <p>Preencha os campos abaixo</p>
+        {% csrf_token %}
+
+        <div class="form-group">
+            {{ form.username.errors }}
+            {{ form.username.label }}
+            {{ form.username }}
+        </div>
+
+        <div class="form-group">
+            {{ form.password.errors }}
+            {{ form.password.label }}
+            {{ form.password }}
+        </div>
+
+        <button class="btn btn-primary btn-block" type="submit">Entrar</button>
+
+        <br>
+        <p>Não tem uma conta? <a href='{%url 'register'%}'>Cadastre-se</a></p>
+    </form>
+
+{% endblock %}

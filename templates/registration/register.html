@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form action="" method="post">
+    {% csrf_token %}
+
+     <div class="form-group">
+        {{form_user.name.errors}}
+        {{form_user.name.label}}
+        {{form_user.name}}
+    </div>
+
+     <div class="form-group">
+        {{form_citizen.birth_date.errors}}
+         {{form_citizen.birth_date.label}}
+        {{form_citizen.birth_date}}
+    </div>
+
+     <div class="form-group">
+        {{form_user.email.errors}}
+        {{form_user.email.label}}
+        {{form_user.email}}
+    </div>
+
+    <div class="form-group">
+        {{form_user.password1.errors}}
+        {{form_user.password1.label}}
+        {{form_user.password1}}
+    </div>
+
+    <div class="form-group">
+        {{form_user.password2.errors}}
+        {{form_user.password2.label}}
+        {{form_user.password2}}
+    </div>
+
+    <input type="submit" value="Cadastrar" class="btn btn-primary">
+
+    <br>
+    <p>Já tem uma conta? <a href='{%url 'auth-login'%}'>Entrar</a></p>
+
+</form>
+
+{% endblock %}

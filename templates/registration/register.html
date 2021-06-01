@@ -1,45 +1,43 @@
 {% extends "base.html" %}
 
+{% load crispy_forms_tags %}
+
 {% block content %}
 
-<form action="" method="post">
-    {% csrf_token %}
+    <div class="form-center">
 
-     <div class="form-group">
-        {{form_user.name.errors}}
-        {{form_user.name.label}}
-        {{form_user.name}}
+        <div class="form-box">
+
+            <h1 class="title">Cadastre-se</h1>
+
+            <form action="" method="post" novalidate>
+                {% csrf_token %}
+
+                <div class="form-group">
+                    {{ form_user.name|as_crispy_field }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_citizen.birth_date|as_crispy_field }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_user.email|as_crispy_field }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_user.password1|as_crispy_field }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_user.password2|as_crispy_field }}
+                </div>
+
+                <input type="submit" value="Cadastrar" class="btn btn-primary btn-block">
+
+                <p class="text-bottom">Já tem uma conta? <a href='{% url 'auth-login' %}'>Entrar</a></p>
+
+            </form>
+        </div>
     </div>
-
-     <div class="form-group">
-        {{form_citizen.birth_date.errors}}
-         {{form_citizen.birth_date.label}}
-        {{form_citizen.birth_date}}
-    </div>
-
-     <div class="form-group">
-        {{form_user.email.errors}}
-        {{form_user.email.label}}
-        {{form_user.email}}
-    </div>
-
-    <div class="form-group">
-        {{form_user.password1.errors}}
-        {{form_user.password1.label}}
-        {{form_user.password1}}
-    </div>
-
-    <div class="form-group">
-        {{form_user.password2.errors}}
-        {{form_user.password2.label}}
-        {{form_user.password2}}
-    </div>
-
-    <input type="submit" value="Cadastrar" class="btn btn-primary">
-
-    <br>
-    <p>Já tem uma conta? <a href='{%url 'auth-login'%}'>Entrar</a></p>
-
-</form>
-
 {% endblock %}

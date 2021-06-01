@@ -11,6 +11,7 @@ class RegisterCitizenForm(ModelForm):
     class Meta:
         model = Citizen
         exclude = ('user', )
+        widgets = {'birth_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date', 'format': '%d/%m/%y'})}
 
 
 class RegisterUserForm(ModelForm):
@@ -25,7 +26,7 @@ class RegisterUserForm(ModelForm):
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
-            raise forms.ValidationError('A confirmação de senha não confere.')
+            raise forms.ValidationError('A confirmação da senha não confere.')
         return password1
 
     def clean(self):

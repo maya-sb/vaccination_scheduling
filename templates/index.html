@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+    {% for message in messages %}
+        <div class="alert alert-success" id="message_container">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     <div class="container">
         <h1>Agendamento de Vacinas</h1>
         {% if user.is_anonymous %}
@@ -9,7 +16,16 @@
             <div class="alert alert-primary" role="alert">
                 Seja bem-vindo(a) {{ user.name }}
             </div>
-             <a class="btn btn-primary" href="{% url 'logout' %}">Sair</a>
+            <a class="btn btn-primary" href="{% url 'logout' %}">Sair</a>
         {% endif %}
     </div>
+
+    <script>
+        let message_success = document.getElementById("message_container");
+        setTimeout(function () {
+            message_success.style.display = "none";
+        }, 3000);
+    </script>
+
 {% endblock %}
+

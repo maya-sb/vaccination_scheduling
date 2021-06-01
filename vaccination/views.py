@@ -3,6 +3,7 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.shortcuts import render, redirect
+from django.contrib import messages
 
 from vaccination.forms import RegisterCitizenForm, RegisterUserForm
 from vaccination.models import Citizen
@@ -31,6 +32,7 @@ def register(request):
             password = form_user.cleaned_data.get('password1')
             user = authenticate(username=user.email, password=password)
             auth_login(request, user)
+            messages.success(request, "Cadastro realizado com sucesso!")
             return redirect('index')
     else:
         form_user = RegisterUserForm()

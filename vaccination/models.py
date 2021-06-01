@@ -2,6 +2,7 @@ from datetime import date, timedelta
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.db.models import Sum
 
 
 class VaccinationCenter(models.Model):
@@ -30,7 +31,7 @@ class ServiceGroup(models.Model):
         ordering = ['-min_age']
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.name} - {self.min_age} anos'
 
 
 class Citizen(models.Model):
@@ -66,12 +67,23 @@ class Vaccine(models.Model):
 class Scheduling(models.Model):
     date = models.DateField(verbose_name='Data')
     slot = models.TimeField(verbose_name='Horário')
-    vaccine = models.ForeignKey(Vaccine, on_delete=models.CASCADE)
+    vaccine = models.ForeignKey(Vaccine, on_delete=models.CASCADE, verbose_name='Vacina')
+    group = models.ForeignKey(ServiceGroup, on_delete=models.CASCADE, verbose_name='Grupo de Atendimento')
 
     class Meta:
         verbose_name = 'Agendamento'
         verbose_name_plural = 'Agendamentos'
         ordering = ['-date']
+
+    def get_total_vacancies(self):
+        return RoomScheduling.objects.filter(scheduling=self).aggregate(Sum('num_vacancies'))['num_vacancies__sum']
+
+    def get_available_vacancies(self):
+        return RoomScheduling.objects.filter(scheduling=self).aggregate(Sum('num_available_vacancies'))[
+            'num_available_vacancies__sum']
+
+    get_total_vacancies.short_description = 'Total de Vagas'
+    get_available_vacancies.short_description = 'Vagas disponíveis'
 
     def __str__(self):
         return f'{self.vaccine.name} - {self.date} - {self.slot}'
@@ -88,8 +100,8 @@ class SchedulingCitizen(models.Model):
     citizen = models.OneToOneField(Citizen, verbose_name='Cidadão', on_delete=models.CASCADE)
 
     class Meta:
-        verbose_name = 'AgendamentoCidadão'
-        verbose_name_plural = 'AgendamentosCidadãos'
+        verbose_name = 'Agendamento-Cidadão'
+        verbose_name_plural = 'Agendamentos-Cidadãos'
 
 
 class Room(models.Model):
@@ -107,12 +119,13 @@ class Room(models.Model):
 
 class RoomScheduling(models.Model):
     num_vacancies = models.IntegerField(verbose_name='Vagas')
+    num_available_vacancies = models.IntegerField(verbose_name='Vagas disponíveis')
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     scheduling = models.ForeignKey(Scheduling, on_delete=models.CASCADE)
 
     class Meta:
-        verbose_name = 'SalaAgendamento'
-        verbose_name_plural = 'SalaAgendamentos'
+        verbose_name = 'Sala-Agendamento'
+        verbose_name_plural = 'Sala-Agendamentos'
 
     def change_num_vacancies(self, vacancies):
-        self.num_vacancies += vacancies
+        self.num_available_vacancies += vacancies

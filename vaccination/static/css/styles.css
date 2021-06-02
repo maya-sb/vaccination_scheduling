@@ -7,6 +7,13 @@
     color: #506d9d;
 }
 
+.container-agend{
+    margin-top: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
 .form-center {
     min-height: 100vh;
     display: flex;
@@ -20,7 +27,19 @@
     background-position: center;
 }
 
+.form-consultar {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: center;
+    padding: 20px;
+    background-color: ghostwhite;
+}
+
 .form-box {
+    position: absolute;
+    left: 50px;
     width: 35%;
     text-align: left;
     box-shadow: 0px 3px 6px #0000001A;
@@ -31,6 +50,26 @@
     backdrop-filter: blur( 7.0px );
     -webkit-backdrop-filter: blur( 7.0px );
 }
+
+.my-row{
+    display: flex;
+    flex-direction: row;
+}
+
+.form-resul {
+    position: absolute;
+    right: 50px;
+    width: 50%;
+    text-align: left;
+    box-shadow: 0px 3px 6px #0000001A;
+    border: 1px solid #E3E3E3;
+    border-radius: 6px;
+    padding: 30px;
+    background: rgba( 255, 255, 255, 0.70 );
+    backdrop-filter: blur( 7.0px );
+    -webkit-backdrop-filter: blur( 7.0px );
+}
+
 
 .text-bottom{
     padding-top: 15px;
@@ -46,6 +85,10 @@
 .btn:hover, .btn:focus, .btn:active {
     background-color:#506d9d;
     border-color: #506d9d;
+}
+
+.messages{
+    margin: 10px;
 }
 
 a:link, a:visited {

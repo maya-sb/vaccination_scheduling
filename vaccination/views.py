@@ -2,19 +2,66 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.db import transaction
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
-from vaccination.forms import RegisterCitizenForm, RegisterUserForm
-from vaccination.models import Citizen
+from datetime import datetime
+
+from vaccination.forms import RegisterCitizenForm, RegisterUserForm, SchedulingForm
+from vaccination.models import Citizen, Scheduling, SchedulingCitizen
+
 
 @login_required
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'vaccination/home.html')
 
 
 def home(request):
     return render(request, 'vaccination/home.html')
+
+
+@login_required
+def scheduling(request):
+    form = SchedulingForm(request.user)
+    resul = {}
+    date = ""
+
+    if request.method == "POST":
+        if 'consultar' in request.POST:
+            print('consultar')
+            form = SchedulingForm(request.user, request.POST)
+            if form.is_valid():
+                date = datetime.strptime(form.cleaned_data.get('date'), '%Y-%m-%d').date()
+                city = form.cleaned_data.get('city')
+                group = form.cleaned_data.get('service_group')
+                #resul = Scheduling.objects.filter(date=date, group=group, center__city=city,num_available_vacancies__gt=0)
+                schedulings = Scheduling.objects.filter(date=date, group=group, center__city=city,num_available_vacancies__gt=0)
+                locals = {}
+                for sche in schedulings:
+                    locals[sche.center.name] = []
+                for sche in schedulings:
+                    locals[sche.center.name].append(sche)
+                print(locals)
+                resul = locals
+
+        elif 'agendar' in request.POST:
+            id_scheduling = request.POST.get('options')
+            if id_scheduling:
+                scheduling = Scheduling.objects.get(pk=int(id_scheduling))
+                print(type(scheduling))
+                if SchedulingCitizen.objects.filter(citizen=request.user.citizen).exists():
+                    messages.error(request, "Não é possível realizar mais de um agendamento por usuário!")
+                else:
+                    with transaction.atomic():
+                        scheduling_citizen = SchedulingCitizen.objects.create(scheduling=scheduling, citizen=request.user.citizen)
+                        scheduling.change_num_vacancies(-1)
+                        scheduling.save(force_update=True)
+                    return render(request, 'vaccination/voucher.html', {'scheduling_citizen': scheduling_citizen})
+            else:
+                messages.info(request, "Selecione algum horário para agendamento.")
+
+    return render(request, 'vaccination/scheduling.html', {'form': form, 'resul': resul, 'date': date})
 
 
 def register(request):
@@ -25,7 +72,6 @@ def register(request):
         form_citizen = RegisterCitizenForm(request.POST)
 
         if form_user.is_valid() and form_citizen.is_valid():
-            print(form_user)
             user = form_user.save()
             citizen = Citizen(user=user, birth_date=form_citizen.cleaned_data['birth_date'])
             citizen.save()

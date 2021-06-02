@@ -1,16 +1,18 @@
+from datetime import datetime
+
 from django import forms
 from django.forms import ModelForm
 from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
 
-from .models import Citizen
+from .models import Citizen, ServiceGroup, VaccinationCenter, Scheduling
 from account.models import User
 
 
 class RegisterCitizenForm(ModelForm):
     class Meta:
         model = Citizen
-        exclude = ('user', )
+        exclude = ('user',)
         widgets = {'birth_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date', 'format': '%d/%m/%y'})}
 
 
@@ -46,3 +48,23 @@ class RegisterUserForm(ModelForm):
         if commit:
             user.save()
         return user
+
+
+class SchedulingForm(forms.Form):
+    service_group = forms.ModelChoiceField(queryset=None, label='Grupo de atendimento', empty_label=None)
+    cities = [(choice, choice) for choice in VaccinationCenter.objects.order_by('city').values_list('city', flat=True).distinct()]
+    city = forms.ChoiceField(choices=cities, label='Cidade')
+
+    date = forms.CharField(label='Data', widget=forms.DateInput(
+        attrs={'class': 'form-control', 'type': 'date', 'format': '%d/%m/%y'}))
+
+    def __init__(self, user, *args, **kwargs):
+        super(SchedulingForm, self).__init__(*args, **kwargs)
+        self.fields['service_group'].queryset = ServiceGroup.objects.filter(min_age__lte=user.citizen.get_age())
+
+    def clean(self):
+        date = self.cleaned_data.get('date')
+        if date:
+            date = datetime.strptime(date, '%Y-%m-%d')
+            if date < datetime.now():
+                self.add_error('date', "Escolha uma data válida.")

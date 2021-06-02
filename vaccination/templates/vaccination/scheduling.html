@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    <div class="messages">
+    {% for message in messages %}
+        {% if message.tags == "info" %}
+            <div class="alert alert-primary" id="message_container">
+                {{ message }}
+            </div>
+        {% elif message.tags == "error" %}
+            <div class="alert alert-danger" id="message_container">
+                {{ message }}
+            </div>
+        {% endif %}
+    {% endfor %}
+    <div>
+
+
+
+    <div class="container-agend">
+        <div class="form-box">
+            <h4 style="text-align: center">Agendar</h4>
+            <form method="post" id="form-consultar" autocomplete="off" novalidate>
+
+                {% csrf_token %}
+                {{ form| crispy }}
+
+                <button class="btn btn-primary btn-block " name="consultar" type="submit">Consultar Disponibilidade
+                </button>
+            </form>
+
+        </div>
+
+        {% if resul %}
+            <div class="form-resul">
+                <b><p>Locais de Vacinação - {{ date }}</p></b>
+                <form method="post" id="form-consultar" autocomplete="off" novalidate>
+                    {% csrf_token %}
+                    {% for key, value in resul.items %}
+                        <p>{{ key }}</p>
+                        <div class="my-row">
+                            {% for scheduling in value %}
+                                <label class="btn btn-primary">
+                                    <input type="radio" id="{{ scheduling.id }}" value="{{ scheduling.id }}"
+                                           name="options"
+                                           autocomplete="off"> {{ scheduling.slot }}
+                                </label>
+                            {% endfor %}
+                        </div>
+                        <hr>
+                    {% endfor %}
+                    <button class="btn btn-primary btn-block" name="agendar" id="btnSchedule" type="submit">Agendar
+                    </button>
+                </form>
+            </div>
+        {% endif %}
+
+    </div>
+
+    <script type="text/javascript">
+        $(document).on('submit', '#form-consultar', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '{% url "scheduling" %}',
+                success: function () {
+                }
+            })
+        });
+    </script>
+
+    <script>
+        let message_success = document.getElementById("message_container");
+        setTimeout(function () {
+            message_success.style.display = "none";
+        }, 3000);
+    </script>
+
+{% endblock %}

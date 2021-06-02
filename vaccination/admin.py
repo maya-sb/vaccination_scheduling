@@ -1,6 +1,7 @@
 from django.contrib import admin
+from django_plotly_dash.models import DashAppAdmin
 
-from vaccination.models import VaccinationCenter, ServiceGroup, Citizen, Vaccine, Scheduling
+from vaccination.models import VaccinationCenter, ServiceGroup, Citizen, Vaccine, Scheduling, SchedulingCitizen
 
 
 @admin.register(VaccinationCenter)
@@ -29,6 +30,8 @@ class SchedulingAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Citizen)
+admin.site.register(SchedulingCitizen)
+#admin.site.unregister(DashAppAdmin)
 # admin.site.site_header = "Sistema de Vacinação LAIS"
 # admin.site.site_title = "Vacinação LAIS"
 # admin.site.index_title = "Administração"

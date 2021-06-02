@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.urls import path, include
-from django.conf.urls import url
 
 urlpatterns = [
     path('', include('vaccination.urls')),
@@ -9,5 +8,4 @@ urlpatterns = [
 
 urlpatterns += [
     path('', include('django.contrib.auth.urls')),
-    url(r'^chaining/', include('smart_selects.urls'))
 ]

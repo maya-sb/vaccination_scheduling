@@ -2,7 +2,6 @@ from datetime import date, timedelta
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
-from django.db.models import Sum
 
 
 class VaccinationCenter(models.Model):
@@ -94,6 +93,7 @@ class SchedulingCitizen(models.Model):
     status = models.CharField(choices=STATUS_CHOICES, max_length=200, default='a')
     scheduling = models.ForeignKey(Scheduling, verbose_name='Agendamento', on_delete=models.CASCADE)
     citizen = models.OneToOneField(Citizen, verbose_name='Cidadão', on_delete=models.CASCADE)
+    date = models.DateField(auto_now_add=True)
 
     class Meta:
         verbose_name = 'Agendamento-Cidadão'

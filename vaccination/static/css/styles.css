@@ -2,16 +2,22 @@
     display: none;
 }
 
-.title{
-    text-align:center;
+.title {
+    text-align: center;
     color: #506d9d;
 }
 
-.container-agend{
-    margin-top: 50px;
+.home {
+    margin: 0;
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    background-color: #4ac1f7;
+}
+
+.nav {
+    width: 25%;
+    height: 100vh;
+    position: sticky;
 }
 
 .form-center {
@@ -37,18 +43,60 @@
     background-color: ghostwhite;
 }
 
+.container-agend {
+    background-color: pink;
+    width: 100%;
+    margin-top: 50px;
+    display: flex;
+    padding-right: 50px;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.container-transparencia {
+    background-color: pink;
+    width: 100%;
+    margin-top: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 .form-box {
-    position: absolute;
-    left: 50px;
     width: 35%;
+    height: min-content;
     text-align: left;
     box-shadow: 0px 3px 6px #0000001A;
     border: 1px solid #E3E3E3;
     border-radius: 6px;
     padding: 30px;
-    background: rgba( 255, 255, 255, 0.70 );
-    backdrop-filter: blur( 7.0px );
-    -webkit-backdrop-filter: blur( 7.0px );
+    background: rgba(255, 255, 255, 0.70);
+    backdrop-filter: blur(7.0px);
+    -webkit-backdrop-filter: blur(7.0px);
+}
+
+.form-registration {
+    width: 35%;
+    left: 15%;
+    height: min-content;
+    text-align: left;
+    box-shadow: 0px 3px 6px #0000001A;
+    border: 1px solid #E3E3E3;
+    border-radius: 6px;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.70);
+    backdrop-filter: blur(7.0px);
+    -webkit-backdrop-filter: blur(7.0px);
+}
+
+.graph {
+    width: 40%;
+    text-align: left;
+    box-shadow: 0px 3px 6px #0000001A;
+    border: 1px solid #E3E3E3;
+    border-radius: 6px;
+    padding: 25px;
+    background-color: white;
 }
 
 .voucher {
@@ -71,76 +119,77 @@
     background-color: ghostwhite;
 }
 
-.my-row{
+.my-row {
     display: flex;
     flex-direction: row;
 }
 
 .form-resul {
-    position: absolute;
-    right: 50px;
     width: 50%;
     text-align: left;
     box-shadow: 0px 3px 6px #0000001A;
     border: 1px solid #E3E3E3;
     border-radius: 6px;
     padding: 30px;
-    background: rgba( 255, 255, 255, 0.70 );
-    backdrop-filter: blur( 7.0px );
-    -webkit-backdrop-filter: blur( 7.0px );
+    background: rgba(255, 255, 255, 0.70);
+    backdrop-filter: blur(7.0px);
+    -webkit-backdrop-filter: blur(7.0px);
+    height: min-content;
 }
 
 
-.text-bottom{
+.text-bottom {
     padding-top: 15px;
-    text-align:center
+    text-align: center
 }
 
-.btn{
+.btn {
     background-color: #899cbd;
     border-color: #899cbd;
 
 }
 
-li{
+li {
     list-style: none
 }
 
 .btn:hover, .btn:focus, .btn:active {
-    background-color:#506d9d;
+    background-color: #506d9d;
     border-color: #506d9d;
 }
 
-.messages{
+.messages {
     margin: 10px;
 }
 
 a:link, a:visited {
-  color: #506d9d;
-  background-color: transparent;
-  text-decoration: none;
+    color: #506d9d;
+    background-color: transparent;
+    text-decoration: none;
 }
 
 a:hover, a:active {
-  color: #506d9d;
-  background-color: transparent;
-  text-decoration: underline;
+    color: #506d9d;
+    background-color: transparent;
+    text-decoration: underline;
 }
 
 @media (max-width: 599px) {
-  .form-box {
-    width: 98%;
-  }
+    .form-box {
+        width: 98%;
+    }
 }
 
 @media print {
     body * {
         visibility: hidden;
     }
+
     #print, #print * {
         visibility: visible;
     }
-    #print{
+
+    #print {
         font-size: xx-large;
         position: fixed;
         left: 0;

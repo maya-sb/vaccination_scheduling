@@ -16,7 +16,6 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
-    #'nested_inlines',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -26,6 +25,7 @@ INSTALLED_APPS = [
     'vaccination.apps.VaccinationConfig',
     'account.apps.UsersConfig',
     'crispy_forms',
+    'django_plotly_dash',
 ]
 
 MIDDLEWARE = [

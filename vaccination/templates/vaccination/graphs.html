@@ -1,0 +1,23 @@
+{% extends "vaccination/base-home.html" %}
+
+{% block content-home %}
+
+    <div class="container">
+        {% if user.is_anonymous %}
+        {% else %}
+            {% autoescape off %}
+                <h4>Transparência</h4>
+                <div class="container-transparencia">
+                    <div class="">
+                        {{ fabricantes }}
+                    </div>
+                    <div class="">
+                        {{ agendamentos }}
+                    </div>
+
+                </div>
+
+            {% endautoescape %}
+        {% endif %}
+    </div>
+{% endblock %}

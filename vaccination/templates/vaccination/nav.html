@@ -1,0 +1,63 @@
+<style>
+    body {
+        margin: 0;
+    }
+
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        background-color: #f1f1f1;
+        height: 100%;
+    }
+
+    li {
+        margin: 5px 10px;
+    }
+
+    li a.options {
+        background-color: #899cbd;
+        color: white;
+        border: 1px solid #f1f1f1;
+        border-radius: 7px;
+    }
+
+    li a {
+        display: block;
+        padding: 8px 16px;
+        text-decoration: none;
+    }
+
+    li a.active {
+        background-color: #04AA6D;
+        padding: 30px 40px;
+        text-decoration: none;
+    }
+
+    li a.home {
+        padding: 30px 40px;
+        text-decoration: none;
+    }
+
+    li a.options:hover:not(.active) {
+        background-color: #555;
+        color: white;
+        border-radius: 7px;
+        text-decoration: none;
+    }
+
+</style>
+
+<nav class="nav">
+    <ul>
+        <li><b><a class="home" href="#home">Agendamento Online</a></b></li>
+        <hr>
+        <li>Seja bem-vindo(a)<br><b>Mayara</b></li>
+        <hr>
+        <li><a href="{% url 'home' %}" class="options">Meus Agendamentos</a></li>
+        <li><a href="{% url 'scheduling' %}" class="options">Agendar</a></li>
+        <li><a href="{% url 'logout' %}" class="options">Sair</a></li>
+    </ul>
+
+</nav>
+

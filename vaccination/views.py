@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta, date
+
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.decorators import login_required
@@ -6,19 +8,128 @@ from django.db import transaction
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
-from datetime import datetime
+from plotly.offline import plot
+import plotly.graph_objects as go
 
 from vaccination.forms import RegisterCitizenForm, RegisterUserForm, SchedulingForm
-from vaccination.models import Citizen, Scheduling, SchedulingCitizen
+from vaccination.models import Citizen, Scheduling, SchedulingCitizen, Vaccine
 
 
 @login_required
 def index(request):
     return render(request, 'vaccination/home.html')
 
+def home2(request):
+
+    #if request.method == "POST":
+
+    graphs = []
+
+    labels = []
+    values = []
+
+    manufacturers = Vaccine.objects.order_by().values_list('manufacturer', flat=True).distinct()
+
+    selected_city = "Aracaju"
+
+    for manufacturer in manufacturers:
+        labels.append(manufacturer)
+        if selected_city == "Todas":
+            num_schedulings = SchedulingCitizen.objects.filter(scheduling__vaccine__manufacturer=manufacturer).count()
+        else:
+            num_schedulings = SchedulingCitizen.objects.filter(scheduling__vaccine__manufacturer=manufacturer,
+                                                           scheduling__center__city=selected_city).count()
+        values.append(num_schedulings)
+
+    graphs.append(go.Pie(labels=labels, values=values, text=values, textinfo='label+percent', textposition='outside'))
+
+    labels = []
+    values = []
+
+    today = datetime.now()
+    six_days_ago = today - timedelta(days=6)
+    days = [six_days_ago + timedelta(days=i) for i in range(0, 7)]
+
+    for day in days:
+        labels.append(day.strftime("%d/%m"))
+        if selected_city == "Todas":
+            num_schedulings = SchedulingCitizen.objects.filter(date=day).count()
+        else:
+            num_schedulings = SchedulingCitizen.objects.filter(date=day, scheduling__center__city=selected_city).count()
+        values.append(num_schedulings)
+
+    graphs.append(go.Bar(x=labels, y=values, text=values, textposition='outside'), )
+
+    layout_fabricantes = {
+        'title': 'Agendamentos por fabricante',
+        'height': 460,
+        'width': 550,
+    }
+
+    layout_agendamentos = {
+        'title': 'Agendamentos por dia',
+        'height': 460,
+        'width': 550,
+        'paper_bgcolor': 'rgba(0,0,0,0)',
+        'plot_bgcolor': 'rgba(0,0,0,0)',
+        'yaxis': {'visible': False, },
+    }
+
+    fabricantes = plot({'data': graphs[0], 'layout': layout_fabricantes}, output_type='div')
+    agendamentos = plot({'data': graphs[1], 'layout': layout_agendamentos}, output_type='div')
+
+    return render(request, 'vaccination/graphs.html',
+                  context={'fabricantes': fabricantes, 'agendamentos': agendamentos})
+
 
 def home(request):
-    return render(request, 'vaccination/home.html')
+    graphs = []
+
+    labels = []
+    values = []
+
+    manufacturers = Vaccine.objects.order_by().values_list('manufacturer', flat=True).distinct()
+    for manufacturer in manufacturers:
+        labels.append(manufacturer)
+        num_schedulings = SchedulingCitizen.objects.filter(scheduling__vaccine__manufacturer=manufacturer).count()
+        values.append(num_schedulings)
+
+    graphs.append(go.Pie(labels=labels, values=values, text=values, textinfo='label+percent', textposition='outside'))
+
+    labels = []
+    values = []
+
+    today = datetime.now()
+    six_days_ago = today - timedelta(days=6)
+    days = [six_days_ago + timedelta(days=i) for i in range(0, 7)]
+
+    for day in days:
+        labels.append(day.strftime("%d/%m"))
+        num_schedulings = SchedulingCitizen.objects.filter(date=day).count()
+        values.append(num_schedulings)
+
+    graphs.append(go.Bar(x=labels, y=values, text=values, textposition='outside'), )
+
+    layout_fabricantes = {
+        'title': 'Agendamentos por fabricante',
+        'height': 460,
+        'width': 550,
+    }
+
+    layout_agendamentos = {
+        'title': 'Agendamentos por dia',
+        'height': 460,
+        'width': 550,
+        'paper_bgcolor': 'rgba(0,0,0,0)',
+        'plot_bgcolor': 'rgba(0,0,0,0)',
+        'yaxis': {'visible': False, },
+    }
+
+    fabricantes = plot({'data': graphs[0], 'layout': layout_fabricantes}, output_type='div')
+    agendamentos = plot({'data': graphs[1], 'layout': layout_agendamentos}, output_type='div')
+
+    return render(request, 'vaccination/graphs.html',
+                  context={'fabricantes': fabricantes, 'agendamentos': agendamentos})
 
 
 @login_required
@@ -29,6 +140,7 @@ def voucher(request, id):
     else:
         messages.error(request, "Usuário sem permissão.")
         return redirect('index')
+
 
 @login_required
 def scheduling(request):
@@ -43,7 +155,8 @@ def scheduling(request):
                 date = datetime.strptime(form.cleaned_data.get('date'), '%Y-%m-%d').date()
                 city = form.cleaned_data.get('city')
                 group = form.cleaned_data.get('service_group')
-                schedulings = Scheduling.objects.filter(date=date, group=group, center__city=city, num_available_vacancies__gt=0)
+                schedulings = Scheduling.objects.filter(date=date, group=group, center__city=city,
+                                                        num_available_vacancies__gt=0)
                 locals = {}
                 for sche in schedulings:
                     locals[sche.center.name] = []
@@ -61,7 +174,8 @@ def scheduling(request):
                     messages.error(request, "Não é possível realizar mais de um agendamento por usuário!")
                 else:
                     with transaction.atomic():
-                        scheduling_citizen = SchedulingCitizen.objects.create(scheduling=scheduling, citizen=request.user.citizen)
+                        scheduling_citizen = SchedulingCitizen.objects.create(scheduling=scheduling,
+                                                                              citizen=request.user.citizen)
                         scheduling.change_num_vacancies(-1)
                         scheduling.save(force_update=True)
                     return redirect('voucher', id=scheduling_citizen.id)

@@ -1,10 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    <div class="voucher-center">
+
+        <div class="voucher">
+            <div id="print">
+                <p style="text-align: center"><b>Comprovante de Agendamento</b></p>
+
+                <ul>
+                    <li><b>Data: </b>{{ scheduling_citizen.scheduling.date }}</li>
+                    <li><b>Horário: </b>{{ scheduling_citizen.scheduling.slot }}  </li>
+                    <li><b>Status: </b> {{ scheduling_citizen.get_status_display }}  </li>
+                    <li><b>Grupo: </b> {{ scheduling_citizen.scheduling.group }} </li>
+                    <hr>
+                    <li><b>Nome: </b> {{ scheduling_citizen.citizen.user.name }} </li>
+                    <li><b>Localização: </b> {{ scheduling_citizen.scheduling.center.name }} </li>
+                    <li><b>Cidade: </b>{{ scheduling_citizen.scheduling.center.city }}</li>
+                    <li><b>Bairro: </b>{{ scheduling_citizen.scheduling.center.neighborhood }}</li>
+                    <li><b>Endereço: </b>{{ scheduling_citizen.scheduling.center.address }}</li>
+                </ul>
+            </div>
+            <div style="text-align: center">
+                <button class="btn btn-primary" onclick="window.print()">Imprimir</button>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

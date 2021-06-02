@@ -1,14 +1,25 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 
     <div class="messages">
     {% for message in messages %}
-        <div class="alert alert-success" id="message_container">
-            {{ message }}
-        </div>
+        {% if message.tags == "info" %}
+            <div class="alert alert-primary" id="message_container">
+                {{ message }}
+            </div>
+        {% elif message.tags == "error" %}
+            <div class="alert alert-danger" id="message_container">
+                {{ message }}
+            </div>
+        {% elif message.tags == "success" %}
+            <div class="alert alert-success" id="message_container">
+                {{ message }}
+            </div>
+        {% endif %}
     {% endfor %}
-    </div>
+    <div>
 
     <div class="container">
         <h1>Agendamento de Vacinas</h1>

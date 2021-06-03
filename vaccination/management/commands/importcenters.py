@@ -18,11 +18,7 @@ class Command(BaseCommand):
         neighborhood = row['dsc_bairro']
         city = row['dsc_cidade']
 
-        VaccinationCenter.objects.update_or_create(cnes=cnes,
-                                                   defaults={'name': name,
-                                                             'address': address,
-                                                             'neighborhood': neighborhood,
-                                                             'city': city})
+        return VaccinationCenter(cnes=cnes, name=name, address=address, neighborhood=neighborhood, city=city)
 
     def handle(self, *args, **options):
 
@@ -43,7 +39,9 @@ class Command(BaseCommand):
                 break
             try:
                 df_centers = pd.read_csv(os.path.abspath(path), encoding='utf-8')
-                df_centers.apply(self.create_or_update_centers, axis=1)
+                list_centers = []
+                df_centers.apply(lambda x: list_centers.append(self.create_or_update_centers(x)), axis=1)
+                VaccinationCenter.objects.bulk_create(list_centers)
                 print('Arquivo importado com sucesso!')
 
             except KeyError:

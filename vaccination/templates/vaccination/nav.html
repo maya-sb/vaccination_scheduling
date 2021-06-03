@@ -3,11 +3,11 @@
         margin: 0;
     }
 
-    ul {
+    .ul-nav {
         list-style-type: none;
         margin: 0;
         padding: 0;
-        background-color: #f1f1f1;
+        background-color: ghostwhite;
         height: 100%;
     }
 
@@ -49,14 +49,24 @@
 </style>
 
 <nav class="nav">
-    <ul>
-        <li><b><a class="home" href="#home">Agendamento Online</a></b></li>
+    <ul class="ul-nav">
+        <li><b><a class="home" href={% url 'home' %}>VacinAgenda</a></b></li>
         <hr>
-        <li>Seja bem-vindo(a)<br><b>Mayara</b></li>
+        {% if user.is_anonymous %}
+            <li>Seja bem-vindo(a)<br><b>Visitante</b></li>
+        {% else %}
+            <li>Seja bem-vindo(a)<br><b>{{ request.user.name }}</b></li>
+        {% endif %}
         <hr>
-        <li><a href="{% url 'home' %}" class="options">Meus Agendamentos</a></li>
-        <li><a href="{% url 'scheduling' %}" class="options">Agendar</a></li>
-        <li><a href="{% url 'logout' %}" class="options">Sair</a></li>
+        {% if user.is_anonymous %}
+            <li><a href="{% url 'login' %}" class="options">Entrar</a></li>
+        {% elif user.is_staff %}
+            <li><a href="{% url 'logout' %}" class="options">Sair</a></li>
+        {% else %}
+            <li><a href="{% url 'voucher' %}" class="options">Meus Agendamentos</a></li>
+            <li><a href="{% url 'scheduling' %}" class="options">Agendar</a></li>
+            <li><a href="{% url 'logout' %}" class="options">Sair</a></li>
+        {% endif %}
     </ul>
 
 </nav>

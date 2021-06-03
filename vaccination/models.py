@@ -30,7 +30,7 @@ class ServiceGroup(models.Model):
         ordering = ['-min_age']
 
     def __str__(self):
-        return f'{self.name} - {self.min_age} anos'
+        return self.name
 
 
 class Citizen(models.Model):

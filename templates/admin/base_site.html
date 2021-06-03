@@ -1,10 +1,10 @@
 {% extends "admin/base.html" %}
 
-{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Vacinação LAIS') }}{% endblock %}
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('VacinAgenda') }}{% endblock %}
 
 {% block branding %}
 <h1 id="site-name">
-    <a href="{% url 'admin:index' %}">Sistema de Vacinação LAIS</a>
+    <a href="{% url 'admin:index' %}">VacinAgenda</a>
 </h1>
 {% endblock %}
 

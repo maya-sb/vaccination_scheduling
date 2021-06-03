@@ -1,0 +1,35 @@
+{% extends "vaccination/base-home.html" %}
+
+{% block content-home %}
+
+    <div class="container">
+            {% autoescape off %}
+                <h4 style="margin-top: 20px">Transparência</h4>
+                {% for message in messages %}
+                    <div class="alert alert-primary" id="message_container">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                <div class="container-transparencia">
+                    <div class="">
+                        {{ fabricantes }}
+                    </div>
+                    <div class="">
+                        {{ agendamentos }}
+                    </div>
+
+                </div>
+
+            {% endautoescape %}
+    </div>
+
+    <script>
+        let message_success = document.getElementById("message_container");
+        setTimeout(function () {
+            message_success.style.display = "none";
+        }, 3000);
+    </script>
+
+{% endblock %}
+
+

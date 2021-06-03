@@ -2,24 +2,24 @@
 {% load crispy_forms_tags %}
 
 {% block content-home %}
-    <div class="messages">
-        {% for message in messages %}
-            {% if message.tags == "info" %}
-                <div class="alert alert-primary" id="message_container">
-                    {{ message }}
-                </div>
-            {% elif message.tags == "error" %}
-                <div class="alert alert-danger" id="message_container">
-                    {{ message }}
-                </div>
-            {% endif %}
-        {% endfor %}
-    </div>
-
 
     <div class="container-agend">
         <div class="form-box">
             <h4 style="text-align: center">Agendamento</h4>
+            <div class="messages">
+                {% for message in messages %}
+                    {% if message.tags == "info" %}
+                        <div class="alert alert-primary" id="message_container">
+                            {{ message }}
+                        </div>
+                    {% elif message.tags == "error" %}
+                        <div class="alert alert-danger" id="message_container">
+                            {{ message }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
             <form method="post" id="form-consultar" autocomplete="off" novalidate>
 
                 {% csrf_token %}

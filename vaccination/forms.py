@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django import forms
 from django.forms import ModelForm
@@ -66,5 +66,5 @@ class SchedulingForm(forms.Form):
         date = self.cleaned_data.get('date')
         if date:
             date = datetime.strptime(date, '%Y-%m-%d')
-            if date < datetime.now():
+            if date + timedelta(days=1) < datetime.now():
                 self.add_error('date', "Escolha uma data válida.")
